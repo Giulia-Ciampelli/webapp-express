@@ -8,6 +8,7 @@ const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 
 // router
+const filmsRouter = require('./routes/route_films.js');
 
 // futuri middleware
 // #endregion variabili d'importazione
@@ -22,3 +23,6 @@ app.listen(PORT, (req, res) => {
 
 // uso cors su rotte (necessario per frontend in futuro)
 app.use(cors());
+
+// uso router
+app.use('/films', filmsRouter);
