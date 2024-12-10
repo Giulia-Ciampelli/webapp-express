@@ -10,7 +10,8 @@ const PORT = process.env.PORT;
 // router
 const filmsRouter = require('./routes/route_films.js');
 
-// futuri middleware
+// middlewares
+const logger = require('./middlewares/logger.js');
 // #endregion variabili d'importazione
 
 // elaborazione corpo json
@@ -23,6 +24,9 @@ app.listen(PORT, (req, res) => {
 
 // uso cors su rotte (necessario per frontend in futuro)
 app.use(cors());
+
+// uso logger (RICORDA: mettere prima del ruoter, o non funziona)
+app.use('/films', logger);
 
 // uso router
 app.use('/films', filmsRouter);
