@@ -12,6 +12,8 @@ const filmsRouter = require('./routes/route_films.js');
 
 // middlewares
 const logger = require('./middlewares/logger.js');
+const error404 = require('./middlewares/error404.js');
+const error500 = require('./middlewares/error500.js');
 // #endregion variabili d'importazione
 
 // elaborazione corpo json
@@ -30,3 +32,9 @@ app.use('/films', logger);
 
 // uso router
 app.use('/films', filmsRouter);
+
+// uso error404
+app.use(error404);
+
+// uso error500 (serve?)
+app.use(error500);
