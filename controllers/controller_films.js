@@ -7,13 +7,13 @@ const index = (req, res) => {
 
     // creazione query
     connection.query(sql, (err, results) => {
-        
+
         // test 500
         if (err) return res.status(500).json({ error: err });
 
         // test 404
         if (!results.length) return res.status(404).json({
-            error: 'No tags found'
+            error: 'Nessun film trovato'
         })
 
         // restituzione json con libri
@@ -27,6 +27,43 @@ const index = (req, res) => {
 // funzione store C
 
 // funzione show R
+const show = (req, res) => {
+    const movieSql = `SELECT * FROM movies WHERE id=?`;
+    const reviewSql = `
+    SELECT *
+    FROM reviews
+    WHERE movie_id=?
+    `;
+    const id = req.params.id;
+
+    // creazione query film
+    connection.query(movieSql, [id], (err, movieResults) => {
+
+        // test 500
+        if (err) return res.status(500).json({ error: err });
+
+        // test 404
+        if (!movieResults.length) return res.status(404).json({
+            error: 'Nessun film trovato'
+        })
+
+        // creazione query review
+        connection.query(reviewSql, [id], (err, reviewResults) => {
+
+            // test 500
+            if (err) return res.status(500).json({ error: err });
+
+            // preparazione dati film e review
+            const movie = {
+                ...movieResults[0],
+                reviews: reviewResults
+            }
+
+            // restituzione dati
+            res.status(200).json(movie);
+        })
+    })
+}
 
 // funzione update U
 
@@ -34,5 +71,6 @@ const index = (req, res) => {
 
 // esportazione moduli
 module.exports = {
-    index
+    index,
+    show
 }

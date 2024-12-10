@@ -9,6 +9,7 @@ router.get('/', filmsController.index);
 // store C
 
 // show R
+router.get('/:id', filmsController.show);
 
 // update U
 
