@@ -27,8 +27,8 @@ app.listen(PORT, (req, res) => {
 // uso cors su rotte (necessario per frontend in futuro)
 app.use(cors());
 
-// uso logger (RICORDA: mettere prima del ruoter, o non funziona)
-app.use('/films', logger);
+// uso logger (RICORDA: mettere prima del router, o non funziona)
+app.use('/', logger);
 
 // uso router
 app.use('/films', filmsRouter);
