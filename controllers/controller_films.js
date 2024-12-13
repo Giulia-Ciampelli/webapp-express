@@ -29,8 +29,8 @@ const reviewStore = (req, res) => {
     const movie_id = req.params.movie_id;
     const { name, vote, text } = req.body;
     const sql = `
-    INSERT INTO reviews (name, vote, text)
-    VALUES (?, ?, ?)
+    INSERT INTO reviews (movie_id, name, vote, text)
+    VALUES (?, ?, ?, ?)
     `;
 
     // creazione query
@@ -38,6 +38,8 @@ const reviewStore = (req, res) => {
         
         // test 500
         if (err) return res.status(500).json({ error: err });
+
+        console.log('Review inserted successfully:', results);
 
         // restituzione dati
         res.status(201).json({
