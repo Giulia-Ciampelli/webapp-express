@@ -7,6 +7,7 @@ const filmsController = require('../controllers/controller_films.js');
 router.get('/', filmsController.index);
 
 // store C
+router.post('/reviews/:id', filmsController.reviewStore);
 
 // show R
 router.get('/:id', filmsController.show);

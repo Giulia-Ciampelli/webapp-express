@@ -25,6 +25,26 @@ const index = (req, res) => {
 }
 
 // funzione store C
+const reviewStore = (req, res) => {
+    const movie_id = req.params.movie_id;
+    const { name, vote, text } = req.body;
+    const sql = `
+    INSERT INTO reviews (name, vote, text)
+    VALUES (?, ?, ?)
+    `;
+
+    // creazione query
+    connection.query(sql, [movie_id, name, vote, text], (err, results) => {
+        
+        // test 500
+        if (err) return res.status(500).json({ error: err });
+
+        // restituzione dati
+        res.status(201).json({
+            success: true
+        })
+    })
+}
 
 // funzione show R
 const show = (req, res) => {
@@ -72,5 +92,6 @@ const show = (req, res) => {
 // esportazione moduli
 module.exports = {
     index,
-    show
+    show,
+    reviewStore
 }
