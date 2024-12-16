@@ -35,7 +35,7 @@ const reviewStore = (req, res) => {
 
     // creazione query
     connection.query(sql, [movie_id, name, vote, text], (err, results) => {
-        
+
         // test 500
         if (err) return res.status(500).json({ error: err });
 
@@ -55,6 +55,7 @@ const show = (req, res) => {
     SELECT *
     FROM reviews
     WHERE movie_id=?
+    ORDER BY id DESC
     `;
     const id = req.params.id;
 
