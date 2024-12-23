@@ -35,31 +35,39 @@ const reviewStore = (req, res) => {
     VALUES (?, ?, ?, ?)
     `; // query per inserire i dati della nuova recensione nella tabella, valori nascosti con ? per evitare sql injections
 
+    // validazione dati, tutti i dati presenti
+    if (!name || !text) {
+        return res.status(422).json({
+            error: 'Invalid data. Please fill all the required fields correctly.'
+        })
+    }
+
+    // validazione lunghezza commento
+    if (text.length < 10 || text.length > 500) {
+        return res.status(422).json({
+            error: 'Your comment must be between 10 and 500 characters.'
+        })
+    }
+
+    // validazione voto
+    if (vote < 1 || vote > 5) {
+        return res.status(422).json({
+            error: 'Your rating must be between 1 and 5 stars.'
+        })
+    }
+
     // creazione query
     connection.query(sql, [movie_id, name, vote, text], (err, results) => {
 
         // test 500
         if (err) return res.status(500).json({ error: err });
 
-        // validazione dati, tutti i dati presenti
-        if (!name || !text) {
-            return res.status(422).json({
-                error: 'Invalid data. Please fill all the required fields correctly.'
-            })
-        }
-
-        // validazione voto
-        if (vote < 1 || vote > 5) {
-            return res.status(422).json({
-                error: 'Your rating must be between 1 and 5 stars.'
-            })
-        }
-
         console.log('Review inserted successfully:', results);
 
         // restituzione dati
         res.status(201).json({
-            success: true
+            success: true,
+            message: 'Thank you for your review! You\'ll be sent to the previous page in a couple of seconds.'
         })
     })
 }
