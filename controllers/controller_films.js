@@ -2,8 +2,9 @@
 const connection = require('../database/db_connection.js');
 
 // funzione index
+// questa funzione mostra tutti i film
 const index = (req, res) => {
-    const sql = `SELECT * FROM movies`;
+    const sql = `SELECT * FROM movies`; // query per mostrare tutta la tabella dei film
 
     // creazione query
     connection.query(sql, (err, results) => {
@@ -16,7 +17,7 @@ const index = (req, res) => {
             error: 'Nessun film trovato'
         })
 
-        // restituzione json con libri
+        // restituzione json con film
         res.status(200).json({
             movies: results,
             count: results.length
@@ -25,19 +26,34 @@ const index = (req, res) => {
 }
 
 // funzione store C
+// questa funzione permette di aggiungere nuove recensioni collegate ad un determinato film
 const reviewStore = (req, res) => {
     const movie_id = req.params.movie_id;
     const { name, vote, text } = req.body;
     const sql = `
     INSERT INTO reviews (movie_id, name, vote, text)
     VALUES (?, ?, ?, ?)
-    `;
+    `; // query per inserire i dati della nuova recensione nella tabella, valori nascosti con ? per evitare sql injections
 
     // creazione query
     connection.query(sql, [movie_id, name, vote, text], (err, results) => {
 
         // test 500
         if (err) return res.status(500).json({ error: err });
+
+        // validazione dati, tutti i dati presenti
+        if (!name || !text) {
+            return res.status(422).json({
+                error: 'Invalid data. Please fill all the required fields correctly.'
+            })
+        }
+
+        // validazione voto
+        if (vote < 1 || vote > 5) {
+            return res.status(422).json({
+                error: 'Your rating must be between 1 and 5 stars.'
+            })
+        }
 
         console.log('Review inserted successfully:', results);
 
@@ -49,14 +65,15 @@ const reviewStore = (req, res) => {
 }
 
 // funzione show R
+// questa funzione mostra sia i film che le sue recensioni, ordinate per data (dal più recente)
 const show = (req, res) => {
-    const movieSql = `SELECT * FROM movies WHERE id=?`;
+    const movieSql = `SELECT * FROM movies WHERE id=?`; // query per mostrare i film
     const reviewSql = `
     SELECT *
     FROM reviews
     WHERE movie_id=?
     ORDER BY id DESC
-    `;
+    `; // query per mostrare le recensioni appartenenti ad un film (determinato dal movie_id), ordinate per data
     const id = req.params.id;
 
     // creazione query film
